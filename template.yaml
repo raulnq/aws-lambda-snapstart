@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  SAM
+
+Resources:
+
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Timeout: 60
+      MemorySize: 512
+      Tracing: Active
+      Runtime: dotnet8
+      Architectures:
+        - x86_64    
+      Handler: MyLambda::MyLambda.Function::FunctionHandler
+      CodeUri: ./src/MyLambda/
+      SnapStart:
+        ApplyOn: PublishedVersions
+      AutoPublishAlias: live
+      Events:
+        get:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+
+Outputs:
+  MyApiEndpoint:
+    Description: "API endpoint"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
